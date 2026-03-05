@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket King Pro - High Quality</title>
+    <title>Cricket King HD - Quality Control</title>
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link href="https://unpkg.com/@silvermine/videojs-quality-selector/dist/quality-selector.css" rel="stylesheet">
     <style>
-        body { background-color: #020617; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
-        .container { width: 100%; max-width: 1000px; padding: 10px; }
-        .video-js { width: 100%; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
-        .status { color: #60a5fa; text-align: center; margin-top: 15px; font-weight: bold; }
+        body { background-color: #020617; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .container { width: 95%; max-width: 1000px; }
+        .video-js { width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid #1e293b; }
+        .status-bar { margin-top: 20px; color: #94a3b8; font-size: 14px; text-align: center; }
+        .status-bar span { color: #3b82f6; font-weight: bold; }
+        /* Quality menu styling for mobile (Redmi 12C) */
+        .vjs-quality-selector .vjs-menu-button { width: 4em; }
     </style>
 </head>
 <body>
@@ -19,7 +22,9 @@
     <video id="cricket-player" class="video-js vjs-big-play-centered vjs-16-9" controls preload="auto">
         <source src="https://ungr.moosewala.workers.dev/" type="application/x-mpegURL">
     </video>
-    <div class="status">HD Streaming Enabled | 1080p Support</div>
+    <div class="status-bar">
+        Server Status: <span>LIVE</span> | Quality: <span>Manual/Auto HD</span>
+    </div>
 </div>
 
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -30,28 +35,29 @@
         autoplay: true,
         muted: false,
         fluid: true,
-        responsive: true,
+        playbackRates: [0.5, 1, 1.5, 2],
         controlBar: {
             children: [
                 'playToggle',
                 'volumePanel',
+                'progressControl',
                 'currentTimeDisplay',
                 'timeDivider',
                 'durationDisplay',
-                'progressControl',
-                'liveDisplay',
-                'qualitySelector', // Yeh line quality button add karegi
+                'qualitySelector', // Yahi hai woh quality change karne wala button
                 'fullscreenToggle',
             ],
         },
     });
 
-    // Error Handling
+    // Auto-retry logic agar link slow ho jaye
     player.on('error', function() {
+        console.log("Retrying stream...");
         setTimeout(function() {
             player.src({ src: 'https://ungr.moosewala.workers.dev/', type: 'application/x-mpegURL' });
-        }, 5000);
+        }, 3000);
     });
 </script>
+
 </body>
 </html>
